@@ -1,7 +1,7 @@
 [project]
-name = "favelas-ibge"
+name = "spsd"
 version = "0.1.0"
-description = "Lê os arquivos do IBGE (Censo 2022) sobre setores e favelas e plota o município com suas favelas."
+description = "São Paulo's Settlement Dataset: setores censitários e favelas de São Paulo (Censo 2022 + GeoSampa) para apoiar detecção em imagens de satélite."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

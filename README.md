@@ -1,4 +1,4 @@
-# favelas-ibge
+# SPSD — São Paulo's Settlement Dataset
 
 Monta um dataset com uma linha por setor censitário (Censo 2022) da cidade de São Paulo,
 para apoiar um modelo que identifica favelas em imagens de satélite. Cada setor recebe
