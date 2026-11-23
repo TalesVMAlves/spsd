@@ -1,0 +1,8 @@
+# Dados: ignora tudo em data/, mantendo só os .gitkeep que preservam as pastas
+data/**
+!data/**/
+!data/**/.gitkeep
+
+.venv/
+.ipynb_checkpoints/
+__pycache__/
