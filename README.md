@@ -21,6 +21,15 @@ Ou abra o notebook no VS Code/Jupyter com o kernel do `.venv`. Os arquivos são
 baixados para `data/raw/` na primeira execução. Nas seguintes, o que já existe é pulado.
 Para outro município, altere `UF`, `MUNICIPIO`, `PREFIXO_SAIDA` e `CRS_METRICO` (fuso UTM).
 
+Depois da coleta, gere a base tratada para o modelo:
+
+```bash
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/limpeza_normalizacao.ipynb
+```
+
+O notebook lê `data/output/setores_sao_paulo_2022.csv` e grava os arquivos tratados ao lado.
+Para outro município, altere `SOURCE`; para outro sorteio do split, altere `SEED`.
+
 Para apontar imagens duplicadas (inclusive rotacionadas em 90°/180°/270°) em um diretório,
 sem apagar nada: `uv run python scripts/check_duplicatas.py [diretorio]`
 (sem argumento, usa `IMAGES_DIR`, definido no topo do script).
@@ -44,3 +53,20 @@ publicados nas mesmas pastas do FTP, e está anotado nos comentários do noteboo
 | `favelas_sao_paulo_2022.gpkg` | polígonos das favelas do município, para gerar máscaras na grade das imagens |
 | `setores_sao_paulo_2022.gpkg` | uma linha por setor, com geometria (EPSG:4674) |
 | `setores_sao_paulo_2022.csv` | a mesma tabela, sem geometria |
+| `setores_sao_paulo_2022_tratado.csv` | base pronta para o modelo: identificação, `split`, rótulo e features normalizadas |
+| `setores_sao_paulo_2022_excluidos.csv` | setores fora do modelo, com o motivo em `exclusion_reason` |
+| `setores_sao_paulo_2022_tratamento.json` | parâmetros da normalização, distritos de cada conjunto e contagens |
+
+## Tratamento para o modelo
+
+As decisões estão justificadas, com as contagens, em `notebooks/limpeza_normalizacao.ipynb`. Resumo:
+
+- **Fora do modelo** (vão para `_excluidos.csv`, com o motivo): represas (10), setores sem moradores (402)
+  e setores com todos os agregados do Censo em sigilo (210).
+- **Vazios que ficam**: entorno não pesquisado (397) recebe a mediana do treino e a flag `entorno_ausente`;
+  sigilo pontual em renda, alfabetização e razão de sexo (22) recebe a mediana do treino;
+  `distrito_prefeitura` vazio (2) recebe o distrito mais frequente do mesmo distrito IBGE.
+- **Split por distrito IBGE** (76/10/10 distritos), equilibrado pela taxa de favela, para setores vizinhos
+  e imagens sobrepostas não caírem em conjuntos diferentes.
+- **Normalização** ajustada só no treino: mediana, `log1p` nas 4 features de cauda longa e z-score.
+- **Chave com as imagens**: `code_tract`, 15 dígitos, lido como texto (`dtype={"code_tract": str}`).
