@@ -21,6 +21,10 @@ Ou abra o notebook no VS Code/Jupyter com o kernel do `.venv`. Os arquivos são
 baixados para `data/raw/` na primeira execução. Nas seguintes, o que já existe é pulado.
 Para outro município, altere `UF`, `MUNICIPIO`, `PREFIXO_SAIDA` e `CRS_METRICO` (fuso UTM).
 
+Para apontar imagens duplicadas (inclusive rotacionadas em 90°/180°/270°) em um diretório,
+sem apagar nada: `uv run python scripts/check_duplicatas.py [diretorio]`
+(sem argumento, usa `IMAGES_DIR`, definido no topo do script).
+
 ## Fontes
 
 | fonte | formato | uso |
